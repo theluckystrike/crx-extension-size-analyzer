@@ -1,89 +1,64 @@
 # @zovo/crx-extension-size-analyzer
 
-A CLI tool and library to analyze Chrome extension file sizes and identify potential bloat.
+[![CI](https://github.com/theluckystrike/crx-extension-size-analyzer/actions/workflows/ci.yml/badge.svg)](https://github.com/theluckystrike/crx-extension-size-analyzer/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Features
+Analyze Chrome extension file sizes and identify bloat. Scans an extension directory, reports per-file and per-type sizes, warns about oversized files, and recommends optimizations like code splitting and image compression. CLI tool and Node.js library.
 
-- Analyze Chrome extension directories
-- Calculate total size and file counts
-- Identify largest files
-- Detect oversized files that may cause issues
-- Group files by extension type
-- Provide recommendations for reducing extension size
-
-## Installation
+## Install
 
 ```bash
-npm install -g @zovo/crx-extension-size-analyzer
+npm install @zovo/crx-extension-size-analyzer
 ```
 
-## Usage
+## Quick Start
 
 ### CLI
 
 ```bash
-crx-extension-size-analyzer /path/to/extension
+npx @zovo/crx-extension-size-analyzer ./my-extension
 ```
+
+Exits with code 1 if any warnings are generated (e.g. files over 1 MB or total size over 2 MB).
 
 ### Library
 
 ```typescript
 import { analyzeExtension, printAnalysis } from '@zovo/crx-extension-size-analyzer';
 
-const analysis = analyzeExtension('/path/to/extension');
+const analysis = analyzeExtension('./my-extension');
+
+// Print formatted report to console
 printAnalysis(analysis);
 
-// Or access the data programmatically
-console.log(`Total size: ${analysis.totalSizeFormatted}`);
-console.log(`File count: ${analysis.fileCount}`);
-console.log(`Largest files:`, analysis.largestFiles);
-```
+// Or use the data directly
+console.log(`Total: ${analysis.totalSizeFormatted}`);
+console.log(`Files: ${analysis.fileCount}`);
+console.log(`Warnings: ${analysis.warnings.length}`);
 
-## Output Example
-
-```
-📦 Chrome Extension Size Analysis
-==================================
-
-Total Size: 1.24 MB
-Total Files: 47
-
-🔍 Largest Files:
-  1. dist/bundle.js - 850.32 KB
-  2. assets/images/logo.png - 120.45 KB
-  3. dist/vendor.js - 95.12 KB
-  4. assets/fonts/font.woff2 - 64.00 KB
-  5. _locales/en/messages.json - 32.10 KB
-  ...
-
-⚠️  Warnings:
-  - dist/bundle.js exceeds 1 MB (850.32 KB)
-
-💡 Recommendations:
-  - Consider splitting 1 large JavaScript file(s)
-  - Consider using sprite sheets or WebP format for 23 image files
-
-📊 Files by Extension:
-  .js: 12 files (1.02 MB)
-  .png: 15 files (450 KB)
-  .json: 8 files (80 KB)
-  .css: 5 files (25 KB)
-  .html: 3 files (15 KB)
+// Largest files
+analysis.largestFiles.forEach(f => {
+  console.log(`  ${f.path} - ${f.sizeFormatted}`);
+});
 ```
 
 ## API
 
-### analyzeExtension(path: string, options?: AnalyzerOptions): SizeAnalysis
+### `analyzeExtension(path, options?)`
 
-Analyzes an extension at the given path.
+Analyzes an extension directory and returns a `SizeAnalysis` object.
 
-#### Options
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `maxFileSize` | `number` | `1048576` (1 MB) | Bytes threshold for file-size warnings |
+| `extensionsToAlert` | `string[]` | `.js .css .png .jpg .woff2 .json` | File types to monitor |
+| `ignorePatterns` | `string[]` | `node_modules .git dist *.map` | Paths/globs to skip |
 
-- `maxFileSize`: Maximum file size in bytes before warning (default: 1MB)
-- `extensionsToAlert`: Array of extensions to monitor (default: all)
-- `ignorePatterns`: Patterns to ignore (default: node_modules, .git, dist, *.map)
+### `printAnalysis(analysis)`
 
-#### Return Value
+Prints a formatted report to stdout including largest files, warnings, recommendations, and breakdown by file extension.
+
+### Return Types
 
 ```typescript
 interface SizeAnalysis {
@@ -91,10 +66,10 @@ interface SizeAnalysis {
   totalSizeFormatted: string;
   fileCount: number;
   files: FileInfo[];
-  largestFiles: FileInfo[];
+  largestFiles: FileInfo[];          // Top 10 by size
   filesByExtension: Map<string, FileInfo[]>;
-  warnings: string[];
-  recommendations: string[];
+  warnings: string[];                // e.g. "file exceeds 1 MB"
+  recommendations: string[];         // e.g. "split large JS files"
 }
 
 interface FileInfo {
@@ -105,6 +80,22 @@ interface FileInfo {
 }
 ```
 
+## Warnings and Recommendations
+
+The analyzer automatically detects:
+
+- Individual files exceeding `maxFileSize` (default 1 MB)
+- Total extension size over 2 MB (Chrome Web Store limit concern)
+- Large JavaScript files that could benefit from code splitting
+- Excessive image files (20+) that could use sprite sheets or WebP
+- Embedded data URLs that should be external assets
+
+## Related
+
+- [crx-permission-analyzer](https://github.com/theluckystrike/crx-permission-analyzer) -- Analyze Chrome extension permissions
+- [crx-manifest-validator](https://github.com/theluckystrike/crx-manifest-validator) -- Validate manifest.json files
+- [chrome-extension-starter-mv3](https://github.com/theluckystrike/chrome-extension-starter-mv3) -- Production-ready MV3 starter template
+
 ## License
 
-MIT
+MIT -- [Zovo](https://zovo.one)
