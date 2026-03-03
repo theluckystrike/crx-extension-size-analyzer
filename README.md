@@ -1,9 +1,15 @@
 # @zovo/crx-extension-size-analyzer
 
+[![npm version](https://img.shields.io/npm/v/@zovo/crx-extension-size-analyzer.svg)](https://npmjs.com/package/@zovo/crx-extension-size-analyzer)
 [![CI](https://github.com/theluckystrike/crx-extension-size-analyzer/actions/workflows/ci.yml/badge.svg)](https://github.com/theluckystrike/crx-extension-size-analyzer/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
+[![Discord](https://img.shields.io/badge/Discord-Zovo-blueviolet.svg?logo=discord)](https://discord.gg/zovo)
+[![Website](https://img.shields.io/badge/Website-zovo.one-blue)](https://zovo.one)
 
-Analyze Chrome extension file sizes and identify bloat. Scans an extension directory, reports per-file and per-type sizes, warns about oversized files, and recommends optimizations like code splitting and image compression. CLI tool and Node.js library.
+> Analyze Chrome extension file sizes and identify bloat. Scans an extension directory, reports per-file and per-type sizes, warns about oversized files, and recommends optimizations like code splitting and image compression. CLI tool and Node.js library.
+
+Part of the [Zovo](https://zovo.one) family of privacy-first Chrome extension developer tools.
 
 ## Install
 
@@ -90,12 +96,39 @@ The analyzer automatically detects:
 - Excessive image files (20+) that could use sprite sheets or WebP
 - Embedded data URLs that should be external assets
 
-## Related
+## See Also
 
-- [crx-permission-analyzer](https://github.com/theluckystrike/crx-permission-analyzer) -- Analyze Chrome extension permissions
-- [crx-manifest-validator](https://github.com/theluckystrike/crx-manifest-validator) -- Validate manifest.json files
-- [chrome-extension-starter-mv3](https://github.com/theluckystrike/chrome-extension-starter-mv3) -- Production-ready MV3 starter template
+### Related Zovo Repositories
+
+- [crx-permission-analyzer](https://github.com/theluckystrike/crx-permission-analyzer) - Analyze Chrome extension permissions
+- [crx-manifest-validator](https://github.com/theluckystrike/crx-manifest-validator) - Validate manifest.json files
+- [chrome-extension-starter-mv3](https://github.com/theluckystrike/chrome-extension-starter-mv3) - Production-ready MV3 starter template
+- [chrome-storage-plus](https://github.com/theluckystrike/chrome-storage-plus) - Type-safe storage wrapper
+
+### Zovo Chrome Extensions
+
+- [Zovo Tab Manager](https://chrome.google.com/webstore/detail/zovo-tab-manager) - Manage tabs efficiently
+- [Zovo Focus](https://chrome.google.com/webstore/detail/zovo-focus) - Block distractions
+- [Zovo Permissions Scanner](https://chrome.google.com/webstore/detail/zovo-permissions-scanner) - Check extension privacy grades
+
+Visit [zovo.one](https://zovo.one) for more information.
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/size-analysis`
+3. **Make** your changes and add tests
+4. **Test** your changes: `npm test`
+5. **Commit** your changes: `git commit -m 'Add new optimization'`
+6. **Push** to the branch: `git push origin feature/size-analysis`
+7. **Submit** a Pull Request
 
 ## License
 
-MIT -- [Zovo](https://zovo.one)
+MIT — [Zovo](https://zovo.one)
+
+---
+
+*Built by developers, for developers. No compromises on privacy.*
