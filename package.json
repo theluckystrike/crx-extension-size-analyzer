@@ -1,5 +1,5 @@
 {
-  "name": "@zovo/crx-extension-size-analyzer",
+  "name": "crx-extension-size-analyzer",
   "version": "1.0.0",
   "description": "Analyze Chrome extension file sizes and identify bloat",
   "type": "module",
@@ -8,10 +8,16 @@
   "bin": {
     "crx-extension-size-analyzer": "./dist/cli.js"
   },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
+    "prepublishOnly": "npm run build",
     "cli": "node ./dist/cli.js"
   },
   "keywords": [
@@ -19,10 +25,24 @@
     "crx",
     "size",
     "analyzer",
-    "bloat"
+    "bloat",
+    "manifest-v3",
+    "web-extension",
+    "browser-extension"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theluckystrike/crx-extension-size-analyzer.git"
+  },
+  "homepage": "https://github.com/theluckystrike/crx-extension-size-analyzer",
+  "bugs": {
+    "url": "https://github.com/theluckystrike/crx-extension-size-analyzer/issues"
+  },
   "author": "Zovo",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.9.3",
