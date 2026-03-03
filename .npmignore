@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Source
+src/
+tests/
+*.ts
+
+# Test extension
+test-extension/
+
+# Config
+tsconfig.json
+vitest.config.ts
+
+# IDE
+.vscode/
+.idea/
+
+# Misc
+*.log
+.DS_Store
