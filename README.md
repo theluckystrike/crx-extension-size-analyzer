@@ -1,70 +1,75 @@
-# @zovo/crx-extension-size-analyzer
+# crx-extension-size-analyzer
 
-[![npm version](https://img.shields.io/npm/v/@zovo/crx-extension-size-analyzer.svg)](https://npmjs.com/package/@zovo/crx-extension-size-analyzer)
 [![CI](https://github.com/theluckystrike/crx-extension-size-analyzer/actions/workflows/ci.yml/badge.svg)](https://github.com/theluckystrike/crx-extension-size-analyzer/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![Discord](https://img.shields.io/badge/Discord-Zovo-blueviolet.svg?logo=discord)](https://discord.gg/zovo)
-[![Website](https://img.shields.io/badge/Website-zovo.one-blue)](https://zovo.one)
+[![Node](https://img.shields.io/badge/Node-%3E%3D18-green.svg)](https://nodejs.org/)
 
-> Analyze Chrome extension file sizes and identify bloat. Scans an extension directory, reports per-file and per-type sizes, warns about oversized files, and recommends optimizations like code splitting and image compression. CLI tool and Node.js library.
+Analyze Chrome extension file sizes and identify bloat. Scans an extension directory, reports per-file and per-type sizes, warns about oversized files, and recommends optimizations like code splitting and image compression. Works as a CLI tool and a Node.js library.
 
-Part of the [Zovo](https://zovo.one) family of privacy-first Chrome extension developer tools.
+---
 
-## Install
-
-```bash
-npm install @zovo/crx-extension-size-analyzer
-```
-
-## Quick Start
-
-### CLI
+INSTALL
 
 ```bash
-npx @zovo/crx-extension-size-analyzer ./my-extension
+npm install crx-extension-size-analyzer
 ```
 
-Exits with code 1 if any warnings are generated (e.g. files over 1 MB or total size over 2 MB).
+---
 
-### Library
+CLI USAGE
+
+```bash
+npx crx-extension-size-analyzer ./my-extension
+```
+
+Pass the path to a Chrome extension directory or CRX file. The tool prints a formatted report covering total size, largest files, warnings, recommendations, and a breakdown by file extension.
+
+Exits with code 1 if any warnings are generated, such as individual files over 1 MB or total extension size over 2 MB.
+
+---
+
+LIBRARY USAGE
 
 ```typescript
-import { analyzeExtension, printAnalysis } from '@zovo/crx-extension-size-analyzer';
+import { analyzeExtension, printAnalysis } from 'crx-extension-size-analyzer';
 
 const analysis = analyzeExtension('./my-extension');
 
-// Print formatted report to console
+// Print the full formatted report to stdout
 printAnalysis(analysis);
 
-// Or use the data directly
-console.log(`Total: ${analysis.totalSizeFormatted}`);
-console.log(`Files: ${analysis.fileCount}`);
-console.log(`Warnings: ${analysis.warnings.length}`);
+// Or work with the data directly
+console.log(analysis.totalSizeFormatted);
+console.log(analysis.fileCount);
+console.log(analysis.warnings.length);
 
-// Largest files
 analysis.largestFiles.forEach(f => {
-  console.log(`  ${f.path} - ${f.sizeFormatted}`);
+  console.log(f.path, f.sizeFormatted);
 });
 ```
 
-## API
+---
 
-### `analyzeExtension(path, options?)`
+API
 
-Analyzes an extension directory and returns a `SizeAnalysis` object.
+analyzeExtension(path, options?)
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `maxFileSize` | `number` | `1048576` (1 MB) | Bytes threshold for file-size warnings |
-| `extensionsToAlert` | `string[]` | `.js .css .png .jpg .woff2 .json` | File types to monitor |
-| `ignorePatterns` | `string[]` | `node_modules .git dist *.map` | Paths/globs to skip |
+Scans an extension directory and returns a SizeAnalysis object.
 
-### `printAnalysis(analysis)`
+Options
 
-Prints a formatted report to stdout including largest files, warnings, recommendations, and breakdown by file extension.
+- maxFileSize (number, default 1048576) - Byte threshold that triggers a file-size warning
+- extensionsToAlert (string[], default .js .css .png .jpg .woff2 .json) - File types to monitor
+- ignorePatterns (string[], default node_modules .git dist *.map) - Paths and globs to skip during scanning
 
-### Return Types
+printAnalysis(analysis)
+
+Prints a formatted report to stdout. Includes the top 10 largest files, all warnings, all recommendations, and file counts grouped by extension.
+
+---
+
+TYPES
 
 ```typescript
 interface SizeAnalysis {
@@ -72,10 +77,10 @@ interface SizeAnalysis {
   totalSizeFormatted: string;
   fileCount: number;
   files: FileInfo[];
-  largestFiles: FileInfo[];          // Top 10 by size
+  largestFiles: FileInfo[];
   filesByExtension: Map<string, FileInfo[]>;
-  warnings: string[];                // e.g. "file exceeds 1 MB"
-  recommendations: string[];         // e.g. "split large JS files"
+  warnings: string[];
+  recommendations: string[];
 }
 
 interface FileInfo {
@@ -84,51 +89,50 @@ interface FileInfo {
   sizeFormatted: string;
   extension: string;
 }
+
+interface AnalyzerOptions {
+  maxFileSize?: number;
+  extensionsToAlert?: string[];
+  ignorePatterns?: string[];
+}
 ```
-
-## Warnings and Recommendations
-
-The analyzer automatically detects:
-
-- Individual files exceeding `maxFileSize` (default 1 MB)
-- Total extension size over 2 MB (Chrome Web Store limit concern)
-- Large JavaScript files that could benefit from code splitting
-- Excessive image files (20+) that could use sprite sheets or WebP
-- Embedded data URLs that should be external assets
-
-## See Also
-
-### Related Zovo Repositories
-
-- [crx-permission-analyzer](https://github.com/theluckystrike/crx-permission-analyzer) - Analyze Chrome extension permissions
-- [crx-manifest-validator](https://github.com/theluckystrike/crx-manifest-validator) - Validate manifest.json files
-- [chrome-extension-starter-mv3](https://github.com/theluckystrike/chrome-extension-starter-mv3) - Production-ready MV3 starter template
-- [chrome-storage-plus](https://github.com/theluckystrike/chrome-storage-plus) - Type-safe storage wrapper
-
-### Zovo Chrome Extensions
-
-- [Zovo Tab Manager](https://chrome.google.com/webstore/detail/zovo-tab-manager) - Manage tabs efficiently
-- [Zovo Focus](https://chrome.google.com/webstore/detail/zovo-focus) - Block distractions
-- [Zovo Permissions Scanner](https://chrome.google.com/webstore/detail/zovo-permissions-scanner) - Check extension privacy grades
-
-Visit [zovo.one](https://zovo.one) for more information.
-
-## Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/size-analysis`
-3. **Make** your changes and add tests
-4. **Test** your changes: `npm test`
-5. **Commit** your changes: `git commit -m 'Add new optimization'`
-6. **Push** to the branch: `git push origin feature/size-analysis`
-7. **Submit** a Pull Request
-
-## License
-
-MIT — [Zovo](https://zovo.one)
 
 ---
 
-*Built by developers, for developers. No compromises on privacy.*
+WHAT IT DETECTS
+
+- Individual files exceeding the maxFileSize threshold (default 1 MB)
+- Total extension size over 2 MB, which may hit Chrome Web Store limits
+- Large JavaScript files that could benefit from code splitting
+- More than 20 image files that could use sprite sheets or WebP format
+- Embedded data URLs in JavaScript files that should be external assets
+
+---
+
+DEVELOPMENT
+
+```bash
+git clone https://github.com/theluckystrike/crx-extension-size-analyzer.git
+cd crx-extension-size-analyzer
+npm install
+npm test
+npm run build
+```
+
+Tests use Vitest and run against a bundled test extension directory.
+
+---
+
+CONTRIBUTING
+
+See CONTRIBUTING.md for guidelines on submitting issues and pull requests.
+
+---
+
+LICENSE
+
+MIT. See LICENSE for full text.
+
+---
+
+Built by theluckystrike. More tools at zovo.one.
